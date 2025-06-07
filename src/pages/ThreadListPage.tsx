@@ -12,24 +12,65 @@ export default function ThreadListPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="fixed top-0 w-full bg-white/70 backdrop-blur-sm shadow-md z-10">
-        <div className="max-w-5xl mx-auto flex justify-between items-center p-4">
-          <h1 className="text-2xl font-extrabold text-blue-600">Katoo Social</h1>
-          <div className="space-x-2">
-            <Link to="/new" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-              New Thread
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      {/* Header */}
+      <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-lg z-20">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center p-5 gap-4">
+          <h1 className="text-3xl font-extrabold text-blue-700 tracking-wide drop-shadow-sm">
+            Katoo Social
+          </h1>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              to="/new"
+              className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-md hover:shadow-lg"
+            >
+              + New Thread
             </Link>
-            <button onClick={exportJSON} className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-              <Download size={16} className="inline mr-1" /> JSON
+            <button
+              onClick={exportJSON}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition shadow-md hover:shadow-lg"
+              aria-label="Export JSON"
+            >
+              <Download size={18} />
+              Export JSON
             </button>
-            <button onClick={exportExcel} className="p-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
-              <Download size={16} className="inline mr-1" /> Excel
+            <button
+              onClick={exportExcel}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-600 text-white font-semibold hover:bg-orange-700 transition shadow-md hover:shadow-lg"
+              aria-label="Export Excel"
+            >
+              <Download size={18} />
+              Export Excel
             </button>
           </div>
         </div>
       </header>
-      {/* ... */}
+
+      {/* Content */}
+      <main className="pt-28 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-4xl font-extrabold text-blue-800 mb-8 select-none drop-shadow-sm">
+          My Threads
+        </h2>
+
+        {threads.length === 0 ? (
+          <p className="text-center text-gray-400 text-lg mt-20">
+            No threads found. Create your first thread!
+          </p>
+        ) : (
+          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {threads.map((thread) => (
+              <li key={thread.id} className="mb-4 border rounded-lg bg-white p-4 shadow hover:shadow-lg transition-shadow">
+                <h2 className="text-lg font-semibold text-blue-700 mb-2">{thread.title}</h2>
+                <p className="text-gray-700 mb-3">{thread.content}</p>
+                <small className="text-gray-500">
+                  by IP: {thread.authorInfo.ip} on {new Date(thread.authorInfo.postedAt).toLocaleString()} using {thread.authorInfo.device}
+                </small>
+              </li>
+            ))}
+
+          </ul>
+        )}
+      </main>
     </div>
   );
 }
