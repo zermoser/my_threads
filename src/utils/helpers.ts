@@ -8,7 +8,16 @@ export function getRandomIP(): string {
 }
 
 export function getDevice(): string {
-  return navigator.userAgent;
+  const ua = navigator.userAgent;
+
+  if (/windows phone/i.test(ua)) return "Windows Phone";
+  if (/Win/i.test(ua)) return "Windows";
+  if (/Mac/i.test(ua)) return "Mac";
+  if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
+  if (/android/i.test(ua)) return "Android";
+  if (/Linux/i.test(ua)) return "Linux";
+
+  return "Unknown Device";
 }
 
 export function getCurrentTimestamp(): string {

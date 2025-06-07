@@ -8,6 +8,8 @@ import {
   getCurrentTimestamp,
   generateId,
 } from '../utils/helpers';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function NewThreadPage() {
   const [title, setTitle] = React.useState('');
@@ -33,55 +35,71 @@ export default function NewThreadPage() {
       },
       replies: [],
     };
+
     saveThreads([newThread, ...threads]);
     navigate('/');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white flex items-center justify-center px-4 py-10">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8">
-        <h2 className="text-4xl font-bold text-indigo-700 mb-6 text-center drop-shadow">
-          ✏️ Create New Thread
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-50 flex items-center justify-center px-4 py-16">
+      <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-10 relative">
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="absolute top-6 left-6 flex items-center gap-2 text-indigo-600 hover:text-indigo-900 transition"
+        >
+          <ArrowLeft size={24} />
+          Back
+        </Link>
+
+        {/* Title */}
+        <h2 className="text-4xl my-8 font-extrabold text-indigo-700 text-center drop-shadow">
+          ✏️ Start a New Thread
         </h2>
 
+        {/* Error */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl">
             {error}
           </div>
         )}
 
-        <div className="mb-5">
-          <label className="block mb-2 font-semibold text-gray-700">Title</label>
+        {/* Title Input */}
+        <div className="mb-6">
+          <label className="block mb-2 text-gray-700 font-medium">Title</label>
           <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            placeholder="Enter a thread title..."
+            type="text"
+            placeholder="Enter a catchy title..."
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
               setError('');
             }}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-sm"
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block mb-2 font-semibold text-gray-700">Content</label>
+        {/* Content Input */}
+        <div className="mb-8">
+          <label className="block mb-2 text-gray-700 font-medium">Content</label>
           <textarea
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            rows={5}
             placeholder="What's on your mind?"
             value={content}
+            rows={5}
             onChange={(e) => {
               setContent(e.target.value);
               setError('');
             }}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition shadow-sm"
           />
         </div>
 
+        {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="w-full bg-indigo-600 text-white font-semibold py-3 rounded-xl hover:bg-indigo-700 transition duration-200 shadow-md"
+          className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-700 transition duration-200"
         >
-          🚀 Post Thread
+          🚀 Post Your Thread
         </button>
       </div>
     </div>

@@ -5,7 +5,7 @@
     "content": "This is a sample thread content.",
     "authorInfo": {
       "ip": "192.168.1.1",
-      "device": "Chrome on Windows",
+      "device": "Windows",
       "postedAt": "2025-06-08T09:00:00Z"
     },
     "replies": [
@@ -14,7 +14,7 @@
         "content": "This is a reply to the thread.",
         "replierInfo": {
           "ip": "192.168.1.2",
-          "device": "Firefox on Mac",
+          "device": "Mac",
           "postedAt": "2025-06-08T10:00:00Z"
         }
       }
