@@ -1,20 +1,33 @@
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Thread } from './types';
+import dummyData from '../../public/dummy.json';
 
 const STORAGE_KEY = 'threads';
 
+// โหลดข้อมูล: ดึงจาก localStorage ถ้าไม่มีค่อยใช้ dummyData
 export function getThreads(): Thread[] {
   const data = localStorage.getItem(STORAGE_KEY);
-  return data ? JSON.parse(data) : [];
+  if (data) {
+    try {
+      return JSON.parse(data) as Thread[];
+    } catch {
+      // กรณี parse ผิดพลาด fallback เป็น dummyData
+    }
+  }
+  // ถ้า localStorage ว่าง ให้เซฟ dummyData ลง localStorage แล้วคืนค่า dummyData
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(dummyData));
+  return dummyData as Thread[];
 }
 
+// บันทึกข้อมูลลง localStorage
 export function saveThreads(threads: Thread[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(threads, null, 2));
 }
 
+// Export JSON
 export function exportJSON() {
-  const data = localStorage.getItem(STORAGE_KEY) || '[]';
+  const data = JSON.stringify(getThreads(), null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -24,6 +37,7 @@ export function exportJSON() {
   URL.revokeObjectURL(url);
 }
 
+// Export Excel
 export function exportExcel() {
   const threads = getThreads();
   const data = threads.map(t => ({
