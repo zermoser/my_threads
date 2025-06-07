@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import { Thread } from './types';
 
 const STORAGE_KEY = 'threads';
@@ -20,4 +22,23 @@ export function exportJSON() {
   a.download = 'threads.json';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+export function exportExcel() {
+  const threads = getThreads();
+  const data = threads.map(t => ({
+    ID: t.id,
+    Title: t.title,
+    Content: t.content,
+    PostedAt: t.authorInfo.postedAt,
+    IP: t.authorInfo.ip,
+    Device: t.authorInfo.device,
+    Replies: t.replies.length
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Threads');
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([wbout], { type: 'application/octet-stream' });
+  saveAs(blob, 'threads.xlsx');
 }
