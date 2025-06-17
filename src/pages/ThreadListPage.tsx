@@ -11,11 +11,62 @@ import {
 
 export default function ThreadListPage() {
   const [threads, setThreads] = React.useState<Thread[]>([]);
+  const [storageError, setStorageError] = React.useState<string | null>(null);
+
+  // ฟังก์ชันช่วยเช็คว่า localStorage ใช้งานได้หรือไม่
+  const isLocalStorageAvailable = (): boolean => {
+    const testKey = '__storage_test__';
+    try {
+      window.localStorage.setItem(testKey, testKey);
+      window.localStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
 
   React.useEffect(() => {
-    setThreads(getThreads());
+    if (!isLocalStorageAvailable()) {
+      // กรณี localStorage ไม่สามารถใช้งานได้ (เช่น บล็อก, Incognito บางเบราเซอร์, นโยบายความปลอดภัย)
+      setStorageError(
+        'ดูเหมือนว่าการเข้าถึง Local Storage ถูกบล็อก กรุณาเปิดใช้งาน Local Storage หรืออนุญาตคุกกี้ เพื่อใช้งานฟีเจอร์นี้'
+      );
+      return;
+    }
+
+    try {
+      const data = getThreads();
+      setThreads(data);
+    } catch (err) {
+      console.error('Error while reading threads from storage:', err);
+      setStorageError(
+        'เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาลองรีเฟรชหน้า หรืออนุญาต Local Storage ให้ใช้งานได้'
+      );
+    }
   }, []);
 
+  // กรณี storageError ไม่เป็น null ให้แสดงข้อความแจ้ง
+  if (storageError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-6">
+        <div className="max-w-lg text-center bg-white border border-red-200 rounded-2xl p-8 shadow-md">
+          <MessageCircle size={48} className="mx-auto text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            ไม่สามารถเข้าถึง Local Storage
+          </h2>
+          <p className="text-gray-600 mb-4">
+            {storageError}
+          </p>
+          <p className="text-gray-500 text-sm">
+            หากคุณใช้โหมดส่วนตัว (Incognito) หรือมีการตั้งค่าบล็อกคุกกี้/Local Storage
+            ให้ลองปิดโหมดนั้น หรือปรับการตั้งค่าเบราเซอร์เพื่อให้อนุญาต Local Storage
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render ปกติเมื่อไม่มีปัญหา
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
       {/* Header */}
